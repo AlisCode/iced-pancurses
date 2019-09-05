@@ -1,13 +1,19 @@
 use std::collections::HashMap;
 use std::ops::Index;
 
+/// A place to register color combinations (foreground and background),
+/// so as to use them in iced.
 pub struct ColorRegistry {
+    /// Registered colors
     colors: HashMap<String, u32>,
+    /// Internal index for pancurses
     color_idx: u32,
 }
 
 impl ColorRegistry {
+    /// Adds a color to the Registry
     pub fn add(&mut self, key: String, (fg, bg): (i16, i16)) {
+        // Inits a new pair given the color values
         pancurses::init_pair(self.color_idx as i16, fg, bg);
         self.colors.insert(key, self.color_idx);
         self.color_idx += 1;
