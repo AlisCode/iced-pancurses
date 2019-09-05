@@ -32,7 +32,7 @@ impl TextRenderer<&str> for PancursesRenderer {
         self.window.mv(bounds.y as i32, bounds.x as i32);
         if let Some(col) = color {
             let col = self.color_registry[col];
-            self.window.attrset(pancurses::COLOR_PAIR(col));
+            self.window.attrset(pancurses::COLOR_PAIR(col.into()));
         }
         self.window.refresh();
         self.window.addstr(content);
