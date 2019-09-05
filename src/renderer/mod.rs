@@ -1,4 +1,5 @@
 mod colors;
+mod text;
 
 use crate::renderer::colors::ColorRegistry;
 use pancurses::{initscr, Input, Window};
