@@ -1,7 +1,11 @@
 [package]
 name = "iced-pancurses"
 version = "0.1.0"
-authors = ["Olivier Pinon <op@impero.com>"]
+license = "MIT"
+authors = ["Olivier Pinon <oliv.pinon@gmail.com>"]
+description = "Toy renderer for iced based on pancurses"
+homepage = "https://github.com/AlisCode/iced-pancurses"
+repository = "https://github.com/AlisCode/iced-pancurses"
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
