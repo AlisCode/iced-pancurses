@@ -38,3 +38,5 @@ impl TextRenderer<&str> for PancursesRenderer {
         self.window.addstr(content);
     }
 }
+
+// TODO: test the text-wrapping impl
