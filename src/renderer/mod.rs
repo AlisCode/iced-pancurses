@@ -1,3 +1,4 @@
+mod checkbox;
 mod text;
 
 use crate::colors::ColorRegistry;
