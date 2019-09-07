@@ -1,3 +1,4 @@
+use iced::widget::text::HorizontalAlignment;
 use iced::{Cache, Column, Text};
 use iced_pancurses::PancursesRenderer;
 
@@ -8,7 +9,11 @@ fn main() {
         .width(view_x)
         .height(view_y)
         .spacing(1)
-        .push(Text::new("Hello pancurses!\nThis is a toy renderer").color("blue"))
+        .push(
+            Text::new("Hello pancurses!\nThis is a toy renderer")
+                .color("blue")
+                .horizontal_alignment(HorizontalAlignment::Center),
+        )
         .push(Text::new("Other text").color("red"));
     let cache = Cache::default();
     let ui = iced::UserInterface::build(root, cache, &renderer);
