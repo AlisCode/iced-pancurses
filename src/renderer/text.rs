@@ -1,11 +1,15 @@
 use crate::renderer::PancursesRenderer;
 
 use iced::widget::text::{HorizontalAlignment, Renderer as TextRenderer, VerticalAlignment};
-use iced::{Node, Size, Style, Number};
+use iced::{Node, Number, Size, Style};
 
 impl TextRenderer<&str> for PancursesRenderer {
     fn node(&self, style: Style, content: &str, _size: Option<u16>) -> Node {
-        let max_len = content.lines().map(|l| l.chars().count()).max().unwrap_or(1);
+        let max_len = content
+            .lines()
+            .map(|l| l.chars().count())
+            .max()
+            .unwrap_or(1);
         let content: String = content.into();
         Node::with_measure(style, move |bounds| {
             let max_x = match bounds.width {
@@ -16,12 +20,12 @@ impl TextRenderer<&str> for PancursesRenderer {
                 Number::Defined(x) => x as u32,
                 _ => u32::max_value(),
             };
-            let layout = TextLayout::compute_layout(&content, max_x, max_y); 
+            let layout = TextLayout::compute_layout(&content, max_x, max_y);
             Size {
                 width: layout.0 as f32,
                 height: layout.1 as f32,
             }
-        }) 
+        })
     }
 
     fn draw(
@@ -41,6 +45,9 @@ impl TextRenderer<&str> for PancursesRenderer {
         );
         if let Some(col) = color {
             let col = self.color_registry[col];
+            self.window.attrset(pancurses::COLOR_PAIR(col.into()));
+        } else {
+            let col = self.color_registry["white"];
             self.window.attrset(pancurses::COLOR_PAIR(col.into()));
         }
         self.window.refresh();
