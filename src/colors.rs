@@ -35,6 +35,18 @@ impl Default for ColorRegistry {
         registry.add("cyan".into(), (pancurses::COLOR_CYAN, -1));
         registry.add("yellow".into(), (pancurses::COLOR_YELLOW, -1));
         registry.add("black".into(), (pancurses::COLOR_BLACK, -1));
+        registry.add(
+            "primary".into(),
+            (pancurses::COLOR_WHITE, pancurses::COLOR_CYAN),
+        );
+        registry.add(
+            "secondary".into(),
+            (pancurses::COLOR_WHITE, pancurses::COLOR_BLACK),
+        );
+        registry.add(
+            "positive".into(),
+            (pancurses::COLOR_WHITE, pancurses::COLOR_GREEN),
+        );
 
         registry
     }
