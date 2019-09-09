@@ -1,4 +1,4 @@
-use iced::{Cache, Column, Checkbox, Text};
+use iced::{Cache, Column, Checkbox};
 use iced_pancurses::PancursesRenderer;
 
 fn main() {
@@ -7,10 +7,14 @@ fn main() {
     let root: Column<(), PancursesRenderer> = Column::new()
         .width(view_x)
         .height(view_y)
-        .spacing(1)
         .push(Checkbox::new(
             false,
             "Test checkbox",
+            |_| { }
+        ))
+        .push(Checkbox::new(
+            false,
+            "Test other checkbox",
             |_| { }
         ));
     let cache = Cache::default();
