@@ -12,5 +12,5 @@ keywords= ["gui", "iced", "pancurses","ncurses",  "tui"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-iced = "0.1.0-alpha"
+iced = { path = "../iced" }
 pancurses = "0.16.1"
