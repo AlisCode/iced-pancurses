@@ -5,9 +5,7 @@ mod slider;
 mod text;
 
 use crate::colors::ColorRegistry;
-use iced::input::{
-    keyboard::Event as KeyboardEvent, mouse::Button, mouse::Event as MouseEvent, ButtonState,
-};
+use iced::input::{mouse::Button, mouse::Event as MouseEvent, ButtonState};
 use iced::Event;
 use pancurses::{initscr, Input, Window};
 

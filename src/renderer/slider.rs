@@ -8,7 +8,7 @@ use std::ops::RangeInclusive;
 impl SliderRenderer for PancursesRenderer {
     fn draw(
         &mut self,
-        cursor_position: Point,
+        _cursor_position: Point,
         bounds: Rectangle,
         _state: &SliderState,
         range: RangeInclusive<f32>,
