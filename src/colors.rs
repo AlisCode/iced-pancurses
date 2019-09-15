@@ -52,10 +52,10 @@ impl Default for ColorRegistry {
     }
 }
 
-impl Index<&str> for ColorRegistry {
+impl<T: AsRef<str>> Index<T> for ColorRegistry {
     type Output = u32;
 
-    fn index(&self, index: &str) -> &u32 {
-        &self.colors[index]
+    fn index(&self, index: T) -> &u32 {
+        &self.colors[index.as_ref()]
     }
 }
