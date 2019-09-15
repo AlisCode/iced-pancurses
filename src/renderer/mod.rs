@@ -1,6 +1,7 @@
 mod button;
 mod checkbox;
 mod debugger;
+mod radio;
 mod slider;
 mod text;
 
