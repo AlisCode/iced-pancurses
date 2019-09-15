@@ -1,30 +1,77 @@
-use iced::{Cache, Column, Checkbox};
+use iced::{Cache, Checkbox, Column, Element, Text};
 use iced_pancurses::PancursesRenderer;
 
+pub struct MyState {
+    viewport_size: (u16, u16),
+    cache: Cache,
+    checked_test_checkbox: bool,
+    checked_test_other_checkbox: bool,
+}
+
+pub enum MyMessage {
+    ToggleTestCheckbox,
+    ToggleOtherCheckbox,
+}
+
+impl MyState {
+    pub fn view(&mut self) -> Element<MyMessage, PancursesRenderer> {
+        let text = match (self.checked_test_checkbox, self.checked_test_other_checkbox) {
+            (true, true) => "Both checked!",
+            (false, true) | (true, false) => "Only one checked",
+            _ => "Zero checked",
+        };
+        Column::new()
+            .width(self.viewport_size.0)
+            .height(self.viewport_size.1)
+            .spacing(1)
+            .push(Text::new(text))
+            .push(Checkbox::new(
+                self.checked_test_checkbox,
+                "Test checkbox",
+                |_| MyMessage::ToggleTestCheckbox,
+            ))
+            .push(Checkbox::new(
+                self.checked_test_other_checkbox,
+                "Test other checkbox",
+                |_| MyMessage::ToggleOtherCheckbox,
+            ))
+            .into()
+    }
+
+    pub fn new(viewport_size: (u16, u16)) -> Self {
+        MyState {
+            viewport_size,
+            cache: Default::default(),
+            checked_test_checkbox: false,
+            checked_test_other_checkbox: false,
+        }
+    }
+
+    pub fn handle_messages(&mut self, messages: Vec<MyMessage>) {
+        messages.into_iter().for_each(|msg| match msg {
+            MyMessage::ToggleTestCheckbox => {
+                self.checked_test_checkbox = !self.checked_test_checkbox
+            }
+            MyMessage::ToggleOtherCheckbox => {
+                self.checked_test_other_checkbox = !self.checked_test_other_checkbox
+            }
+        })
+    }
+}
 fn main() {
     let mut renderer = PancursesRenderer::default();
     let (view_y, view_x) = renderer.size();
-    let root: Column<(), PancursesRenderer> = Column::new()
-        .width(view_x)
-        .height(view_y)
-        .push(Checkbox::new(
-            false,
-            "Test checkbox",
-            |_| { }
-        ))
-        .push(Checkbox::new(
-            false,
-            "Test other checkbox",
-            |_| { }
-        ));
-    let cache = Cache::default();
-    let ui = iced::UserInterface::build(root, cache, &renderer);
-
-    ui.draw(&mut renderer);
+    let mut state = MyState::new((view_x, view_y));
     loop {
-        let _event = renderer.handle();
-        renderer.flush();
+        let cache = state.cache.clone();
+        let root = state.view();
+        let mut ui = iced::UserInterface::build(root, cache, &renderer);
         ui.draw(&mut renderer);
+        if let Some(events) = renderer.handle() {
+            let messages = ui.update(events.into_iter());
+            drop(ui);
+            state.handle_messages(messages);
+        }
+        renderer.flush();
     }
 }
-
