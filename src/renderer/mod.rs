@@ -139,12 +139,6 @@ impl PancursesRenderer {
         }
     }
 
-    /// Gets the size of the viewport
-    pub fn size(&self) -> (u32, u32) {
-        let (y, x) = self.window.get_max_yx();
-        (y as u32, x as u32)
-    }
-
     /// Draws a given primitive onto the window
     pub fn draw(&mut self, primitive: Primitive) {
         match primitive {
@@ -164,7 +158,7 @@ impl PancursesRenderer {
                 let col_idx = self
                     .color_registry
                     .get_idx(PancursesColor::new(pancurses::COLOR_WHITE, -1));
-                self.window.attrset(pancurses::COLOR_PAIR(col_idx as u32));
+                self.window.attrset(pancurses::COLOR_PAIR((col_idx as u32).into()));
                 let x = bounds.x as i32;
                 let y = bounds.y as i32;
                 let w = bounds.width as i32;
@@ -178,7 +172,7 @@ impl PancursesRenderer {
                 let col_idx = self
                     .color_registry
                     .get_idx(PancursesColor::new(pancurses::COLOR_WHITE, -1));
-                self.window.attrset(pancurses::COLOR_PAIR(col_idx as u32));
+                self.window.attrset(pancurses::COLOR_PAIR((col_idx as u32).into));
                 self.window.mv(y, x);
                 self.window.addch(boxchar);
             }
