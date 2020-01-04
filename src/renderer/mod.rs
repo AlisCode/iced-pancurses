@@ -152,7 +152,7 @@ impl PancursesRenderer {
             Primitive::Text(texts, bounds, color) => {
                 let col = crate::colors::get_closest_color(color);
                 let col_idx = self.color_registry.get_idx(PancursesColor::new(col, -1));
-                self.window.attrset(pancurses::COLOR_PAIR(col_idx as u32));
+                self.window.attrset(pancurses::COLOR_PAIR((col_idx as u32).into()));
                 let mut y = 0;
                 texts.into_iter().for_each(|l| {
                     self.window.mv(bounds.y as i32 + y as i32, bounds.x as i32);
