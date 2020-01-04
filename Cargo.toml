@@ -1,5 +1,5 @@
 [package]
-name = "iced-pancurses"
+name = "iced_pancurses"
 version = "0.1.1"
 license = "MIT"
 authors = ["Olivier Pinon <oliv.pinon@gmail.com>"]
@@ -7,7 +7,7 @@ description = "Toy renderer for iced based on pancurses"
 homepage = "https://github.com/AlisCode/iced-pancurses"
 repository = "https://github.com/AlisCode/iced-pancurses"
 edition = "2018"
-keywords= ["gui", "iced", "pancurses","ncurses",  "tui"]
+keywords= ["gui", "iced", "pancurses", "ncurses", "tui"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
