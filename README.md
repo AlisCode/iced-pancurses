@@ -35,7 +35,7 @@ Add `iced-native` as a dependency in your `Cargo.toml` :
 
 ```
 iced_native = "0.1.0-beta"
-iced_pancurses = "0.1.1"
+iced-pancurses = "0.1.1"
 ```
 
 # Contributing / Feedback

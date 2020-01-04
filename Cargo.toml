@@ -1,5 +1,5 @@
 [package]
-name = "iced_pancurses"
+name = "iced-pancurses"
 version = "0.1.2"
 license = "MIT"
 authors = ["Olivier Pinon <oliv.pinon@gmail.com>"]
