@@ -179,6 +179,12 @@ impl PancursesRenderer {
             _ => (),
         }
     }
+
+    /// Gets the current size of the terminal root window
+    pub fn size(&self) -> (u16,u16) {
+        let yx = self.window.get_max_yx();
+        (yx.1 as u16, yx.0 as u16)
+    }
 }
 
 pub fn move_cursor_and(x: i32, y: i32, other: Vec<Event>) -> Vec<Event> {

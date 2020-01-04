@@ -1,8 +1,8 @@
 use crate::PancursesRenderer;
-use iced_native::{Cache, Element, UserInterface};
+use iced_native::{Cache, Container, Element, Length, UserInterface};
 
 pub trait Sandbox: Sized {
-    type Message: std::fmt::Debug + Send + Clone;
+    type Message: std::fmt::Debug + Send + Clone + 'static;
 
     /// Initializes the Sanbox 
     ///
@@ -32,8 +32,10 @@ pub trait Sandbox: Sized {
         let mut cache = Some(Cache::default());
         
         loop {
+            renderer.flush();
+            let size = renderer.size();
             // Consumes the cache and renders the UI to primitives
-            let view = state.view();
+            let view: Element<'_, Self::Message, PancursesRenderer> = Container::new(state.view()).width(Length::Units(size.0)).height(Length::Units(size.1)).into();
             let mut ui = UserInterface::build(
                 view,
                 cache.take().unwrap(),
