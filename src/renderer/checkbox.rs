@@ -1,24 +1,25 @@
+use crate::primitive::Primitive;
 use crate::PancursesRenderer;
 
-use iced::widget::checkbox::Renderer as CheckboxRenderer;
-use iced::{MouseCursor, Point, Rectangle};
+use iced_native::widget::checkbox::Renderer as CheckboxRenderer;
+use iced_native::Rectangle;
 
 impl CheckboxRenderer for PancursesRenderer {
+    fn default_size(&self) -> u32 {
+        1
+    }
+
     fn draw(
         &mut self,
-        _cursor_position: Point,
         bounds: Rectangle,
-        _text_bounds: Rectangle,
         is_checked: bool,
-    ) -> MouseCursor {
-        let x = bounds.x as i32;
-        let y = bounds.y as i32;
-        self.window.mv(y, x);
-        if is_checked {
-            self.window.addch('x');
-        } else {
-            self.window.addch('o');
-        }
-        MouseCursor::OutOfBounds
+        _is_mouse_over: bool,
+        label: Primitive,
+    ) -> Primitive {
+        let boxchar = if is_checked { 'x' } else { 'o' };
+        Primitive::Group(vec![
+            Primitive::Char(bounds.x as i32, bounds.y as i32, boxchar),
+            label,
+        ])
     }
 }

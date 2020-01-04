@@ -1,11 +1,9 @@
 use crate::PancursesRenderer;
-use iced::renderer::Debugger;
-use iced::Layout;
+use iced_native::renderer::Debugger;
+use iced_native::{Layout, Color, Point};
 
 impl Debugger for PancursesRenderer {
-    type Color = ();
-
-    fn explain(&mut self, layout: &Layout, _color: ()) {
+    fn explain<Message>(&mut self, widget: &dyn Widget<Message, Self>, layout: Layout, cursor_position: Point, color: Color) {
         let bounds = layout.bounds();
         if let Ok(sub_win) = self.window.subwin(
             bounds.height as i32,

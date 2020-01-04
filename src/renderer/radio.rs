@@ -1,20 +1,24 @@
+use crate::primitive::Primitive;
 use crate::PancursesRenderer;
-use iced::widget::radio::Renderer as RadioRenderer;
-use iced::{MouseCursor, Point, Rectangle};
+use iced_native::widget::radio::Renderer as RadioRenderer;
+use iced_native::Rectangle;
 
 impl RadioRenderer for PancursesRenderer {
+    fn default_size(&self) -> u32 {
+        1
+    }
+
     fn draw(
         &mut self,
-        _cursor_position: Point,
         bounds: Rectangle,
-        _label_bounds: Rectangle,
         is_selected: bool,
-    ) -> MouseCursor {
-        let char_radio = if is_selected { 'x' } else { 'o' };
-        let x = bounds.x as i32;
-        let y = bounds.y as i32;
-        self.window.mvaddch(y, x, char_radio);
-
-        MouseCursor::OutOfBounds
+        _is_mouse_over: bool,
+        label: Primitive,
+    ) -> Primitive {
+        let radiochar = if is_selected { 'x' } else { 'o' };
+        Primitive::Group(vec![
+            Primitive::Char(bounds.x as i32, bounds.y as i32, radiochar),
+            label,
+        ])
     }
 }

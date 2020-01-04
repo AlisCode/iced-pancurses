@@ -1,63 +1,39 @@
+use crate::primitive::Primitive;
 use crate::renderer::PancursesRenderer;
 
-use iced::widget::text::{HorizontalAlignment, Renderer as TextRenderer, VerticalAlignment};
-use iced::{Node, Number, Size, Style};
+use iced_native::widget::text;
+use iced_native::{Color, Font, HorizontalAlignment, Rectangle, Size, VerticalAlignment};
 
-impl TextRenderer<&str> for PancursesRenderer {
-    fn node(&self, style: Style, content: &str, _size: Option<u16>) -> Node {
-        let max_len = content
-            .lines()
-            .map(|l| l.chars().count())
-            .max()
-            .unwrap_or(1);
+impl text::Renderer for PancursesRenderer {
+    fn default_size(&self) -> u16 {
+        1
+    }
+
+    fn measure(&self, content: &str, _size: u16, _font: Font, bounds: Size) -> (f32, f32) {
         let content: String = content.into();
-        Node::with_measure(style, move |bounds| {
-            let max_x = match bounds.width {
-                Number::Defined(x) => x as u32,
-                _ => max_len as u32,
-            };
-            let max_y = match bounds.height {
-                Number::Defined(x) => x as u32,
-                _ => u32::max_value(),
-            };
-            let layout = TextLayout::compute_layout(&content, max_x, max_y);
-            Size {
-                width: layout.0 as f32,
-                height: layout.1 as f32,
-            }
-        })
+        let max_x = bounds.width as u32;
+        let max_y = bounds.height as u32;
+        let layout = TextLayout::compute_layout(&content, max_x, max_y);
+        (layout.0 as f32, layout.1 as f32)
     }
 
     fn draw(
         &mut self,
-        bounds: iced::Rectangle,
+        bounds: Rectangle,
         content: &str,
-        _size: Option<u16>,
-        color: Option<&str>,
+        _size: u16,
+        _font: Font,
+        color: Option<Color>,
         horizontal_alignment: HorizontalAlignment,
         _vertical_alignment: VerticalAlignment,
-    ) {
+    ) -> Self::Output {
         let wrapped_content = TextLayout::wrap(
             content,
             bounds.width as u32,
             bounds.height as u32,
             horizontal_alignment,
         );
-        if let Some(col) = color {
-            let col = self.color_registry[col];
-            self.window.attrset(pancurses::COLOR_PAIR(col.into()));
-        } else {
-            let col = self.color_registry["white"];
-            self.window.attrset(pancurses::COLOR_PAIR(col.into()));
-        }
-        self.window.refresh();
-
-        let mut y = 0;
-        wrapped_content.into_iter().for_each(|l| {
-            self.window.mv(bounds.y as i32 + y as i32, bounds.x as i32);
-            self.window.addstr(l);
-            y += 1;
-        });
+        Primitive::Text(wrapped_content, bounds, color.unwrap_or(Color::WHITE))
     }
 }
 
@@ -126,7 +102,7 @@ impl TextLayout {
 pub mod tests {
 
     use super::TextLayout;
-    use iced::widget::text::HorizontalAlignment;
+    use iced_native::HorizontalAlignment;
 
     #[test]
     pub fn text_layout_compute_should_work() {

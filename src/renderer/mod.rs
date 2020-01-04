@@ -1,20 +1,30 @@
 mod button;
 mod checkbox;
-mod debugger;
+mod column;
+//mod debugger;
+mod image;
 mod radio;
+mod scrollable;
 mod slider;
+//mod space;
+mod row;
 mod text;
+mod text_input;
 
-use crate::colors::ColorRegistry;
-use iced::input::{mouse::Button, mouse::Event as MouseEvent, ButtonState};
-use iced::Event;
+use crate::colors::{ColorRegistry, PancursesColor};
+use crate::primitive::Primitive;
+use iced_native::input::{
+    keyboard, keyboard::KeyCode, mouse::Button, mouse::Event as MouseEvent, ButtonState,
+};
+use iced_native::layout::Limits;
+use iced_native::{Event, Renderer};
 use pancurses::{initscr, Input, Window};
 
 /// Pancurses Renderer implementation for iced
 pub struct PancursesRenderer {
     /// Pancurses window to use to print UI elements
     window: Window,
-    /// Color registry in use by the backend
+    /// The ColorRegistry is the place to store pancurses color pairs indices
     color_registry: ColorRegistry,
 }
 
@@ -26,15 +36,29 @@ impl Default for PancursesRenderer {
         pancurses::curs_set(0);
         pancurses::start_color();
         pancurses::use_default_colors();
-        window.keypad(true); // Set keypad mode
-        pancurses::mousemask(pancurses::ALL_MOUSE_EVENTS, std::ptr::null_mut()); // Listen to all mouse events
+        // Set keypad mode; necessary for correct input handling
+        window.keypad(true);
 
-        let color_registry = ColorRegistry::default();
-
+        // Listen to all mouse events
+        pancurses::mousemask(pancurses::ALL_MOUSE_EVENTS, std::ptr::null_mut());
         Self {
             window,
-            color_registry,
+            color_registry: Default::default(),
         }
+    }
+}
+
+impl Renderer for PancursesRenderer {
+    type Output = Primitive;
+
+    fn layout<'a, Message>(
+        &mut self,
+        element: &iced_native::Element<'a, Message, Self>,
+    ) -> iced_native::layout::Node {
+        let limits = Limits::NONE
+            .max_width(self.window.get_max_x() as u32)
+            .max_height(self.window.get_max_y() as u32);
+        element.layout(self, &limits)
     }
 }
 
@@ -49,24 +73,61 @@ impl PancursesRenderer {
     pub fn handle(&self) -> Option<Vec<Event>> {
         let input = self.window.getch();
         match input {
+            Some(Input::Character(c)) => {
+                Some(vec![Event::Keyboard(keyboard::Event::CharacterReceived(c))])
+            }
+            Some(Input::KeyBackspace) => Some(vec![
+                Event::Keyboard(keyboard::Event::Input {
+                    state: ButtonState::Pressed,
+                    key_code: KeyCode::Backspace,
+                }),
+                Event::Keyboard(keyboard::Event::Input {
+                    state: ButtonState::Released,
+                    key_code: KeyCode::Backspace,
+                }),
+            ]),
+            Some(Input::KeyEnter) => Some(vec![
+                Event::Keyboard(keyboard::Event::Input {
+                    state: ButtonState::Pressed,
+                    key_code: KeyCode::Enter,
+                }),
+                Event::Keyboard(keyboard::Event::Input {
+                    state: ButtonState::Released,
+                    key_code: KeyCode::Enter,
+                }),
+            ]),
             Some(Input::KeyMouse) => {
                 if let Ok(mouse_event) = pancurses::getmouse() {
                     match mouse_event.bstate {
                         pancurses::BUTTON1_PRESSED => Some(move_cursor_and(
                             mouse_event.x,
                             mouse_event.y,
-                            Event::Mouse(MouseEvent::Input {
+                            vec![Event::Mouse(MouseEvent::Input {
                                 state: ButtonState::Pressed,
                                 button: Button::Left,
-                            }),
+                            })],
                         )),
                         pancurses::BUTTON1_RELEASED => Some(move_cursor_and(
                             mouse_event.x,
                             mouse_event.y,
-                            Event::Mouse(MouseEvent::Input {
+                            vec![Event::Mouse(MouseEvent::Input {
                                 state: ButtonState::Released,
                                 button: Button::Left,
-                            }),
+                            })],
+                        )),
+                        pancurses::BUTTON1_CLICKED => Some(move_cursor_and(
+                            mouse_event.x,
+                            mouse_event.y,
+                            vec![
+                                Event::Mouse(MouseEvent::Input {
+                                    state: ButtonState::Pressed,
+                                    button: Button::Left,
+                                }),
+                                Event::Mouse(MouseEvent::Input {
+                                    state: ButtonState::Released,
+                                    button: Button::Left,
+                                }),
+                            ],
                         )),
                         _ => None,
                     }
@@ -79,18 +140,59 @@ impl PancursesRenderer {
     }
 
     /// Gets the size of the viewport
-    pub fn size(&self) -> (u16, u16) {
+    pub fn size(&self) -> (u32, u32) {
         let (y, x) = self.window.get_max_yx();
-        (y as u16, x as u16)
+        (y as u32, x as u32)
+    }
+
+    /// Draws a given primitive onto the window
+    pub fn draw(&mut self, primitive: Primitive) {
+        match primitive {
+            Primitive::Group(prims) => prims.into_iter().for_each(|p| self.draw(p)),
+            Primitive::Text(texts, bounds, color) => {
+                let col = crate::colors::get_closest_color(color);
+                let col_idx = self.color_registry.get_idx(PancursesColor::new(col, -1));
+                self.window.attrset(pancurses::COLOR_PAIR(col_idx as u32));
+                let mut y = 0;
+                texts.into_iter().for_each(|l| {
+                    self.window.mv(bounds.y as i32 + y as i32, bounds.x as i32);
+                    self.window.addstr(l);
+                    y += 1;
+                });
+            }
+            Primitive::BoxDisplay(bounds) => {
+                let col_idx = self
+                    .color_registry
+                    .get_idx(PancursesColor::new(pancurses::COLOR_WHITE, -1));
+                self.window.attrset(pancurses::COLOR_PAIR(col_idx as u32));
+                let x = bounds.x as i32;
+                let y = bounds.y as i32;
+                let w = bounds.width as i32;
+                let h = bounds.height as i32;
+                if let Ok(sub_win) = self.window.subwin(h, w, y, x) {
+                    sub_win.border(0, 0, 0, 0, 0, 0, 0, 0);
+                    sub_win.delwin();
+                }
+            }
+            Primitive::Char(x, y, boxchar) => {
+                let col_idx = self
+                    .color_registry
+                    .get_idx(PancursesColor::new(pancurses::COLOR_WHITE, -1));
+                self.window.attrset(pancurses::COLOR_PAIR(col_idx as u32));
+                self.window.mv(y, x);
+                self.window.addch(boxchar);
+            }
+            _ => (),
+        }
     }
 }
 
-pub fn move_cursor_and(x: i32, y: i32, other: Event) -> Vec<Event> {
-    vec![
-        Event::Mouse(MouseEvent::CursorMoved {
-            x: x as f32,
-            y: y as f32,
-        }),
-        other,
-    ]
+pub fn move_cursor_and(x: i32, y: i32, other: Vec<Event>) -> Vec<Event> {
+    vec![Event::Mouse(MouseEvent::CursorMoved {
+        x: x as f32,
+        y: y as f32,
+    })]
+    .into_iter()
+    .chain(other.into_iter())
+    .collect()
 }
