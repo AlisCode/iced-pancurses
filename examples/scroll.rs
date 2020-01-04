@@ -1,5 +1,5 @@
 use iced_native::widget::scrollable::State;
-use iced_native::{Cache, Column, Scrollable, Text, Row, Length};
+use iced_native::{Cache, Column, Length, Row, Scrollable, Text};
 use iced_pancurses::PancursesRenderer;
 
 fn main() {

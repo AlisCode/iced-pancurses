@@ -1,17 +1,33 @@
-use iced_native::{Cache, Column, Image, Text};
-use iced_pancurses::PancursesRenderer;
+use iced_native::{Column, Container, Element, Image, Length, Text};
+use iced_pancurses::{PancursesRenderer, Sandbox};
+
+struct MyState;
+
+impl Sandbox for MyState {
+    type Message = ();
+
+    fn new() -> Self {
+        MyState
+    }
+
+    fn update(&mut self, _messages: Vec<()>) {}
+
+    fn view(&mut self) -> Element<'_, (), PancursesRenderer> {
+        Container::new(
+            Column::new()
+                .spacing(1)
+                .push(Text::new("Hello image !").width(Length::Shrink))
+                .push(Image::new("resources/ferris.png"))
+                .width(Length::Shrink),
+        )
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .center_x()
+        .center_y()
+        .into()
+    }
+}
 
 fn main() {
-    let mut renderer = PancursesRenderer::default();
-    let root: Column<(), PancursesRenderer> = Column::new()
-        .spacing(1)
-        .push(Text::new("Hello image !"))
-        .push(Image::new("resources/ferris.png"));
-    let cache = Cache::default();
-    let ui = iced_native::UserInterface::build(root, cache, &mut renderer);
-    loop {
-        let primitives = ui.draw(&mut renderer);
-        renderer.draw(primitives);
-        let _event = renderer.handle();
-    }
+    MyState::run()
 }
