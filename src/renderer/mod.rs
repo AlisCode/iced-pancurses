@@ -172,7 +172,7 @@ impl PancursesRenderer {
                 let col_idx = self
                     .color_registry
                     .get_idx(PancursesColor::new(pancurses::COLOR_WHITE, -1));
-                self.window.attrset(pancurses::COLOR_PAIR((col_idx as u32).into));
+                self.window.attrset(pancurses::COLOR_PAIR((col_idx as u32).into()));
                 self.window.mv(y, x);
                 self.window.addch(boxchar);
             }
