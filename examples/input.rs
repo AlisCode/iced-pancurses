@@ -1,54 +1,50 @@
-use iced_native::widget::button::State as ButtonState;
-use iced_native::{Button, Cache, Column, Element, Text};
+use iced_native::widget::text_input::State;
+use iced_native::{Cache, Color, Column, Element, HorizontalAlignment, Text, TextInput};
 use iced_pancurses::PancursesRenderer;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub enum MyMessage {
-    ClickedButton,
+    OnTextInput(String),
 }
 
 pub struct MyState {
-    viewport_size: (u32, u32),
-    button_state: ButtonState,
-    clicked: u32,
+    text_input_state: State,
+    curr_value: String,
     pub cache: Cache,
 }
 
 impl MyState {
     pub fn view(&mut self) -> Element<MyMessage, PancursesRenderer> {
         Column::new()
-            .max_width(self.viewport_size.0)
-            .max_height(self.viewport_size.1)
             .spacing(1)
-            .push(Text::new(&format!("Button clicked {} times", self.clicked)))
-            .push(
-                Button::new(&mut self.button_state, Text::new("Hello!"))
-                    .padding(1)
-                    .on_press(MyMessage::ClickedButton),
-            )
+            .push(Text::new("Hello TextInput!"))
+            .push(TextInput::new(
+                &mut self.text_input_state,
+                "Type something",
+                &self.curr_value,
+                MyMessage::OnTextInput,
+            ))
             .into()
     }
 
-    pub fn new(viewport_size: (u32, u32)) -> Self {
+    pub fn new() -> Self {
         MyState {
-            viewport_size,
-            button_state: ButtonState::new(),
-            clicked: 0,
-            cache: Cache::default(),
+            text_input_state: State::new(),
+            curr_value: "".into(),
+            cache: Default::default(),
         }
     }
 
     pub fn handle_messages(&mut self, messages: Vec<MyMessage>) {
         messages.into_iter().for_each(|m| match m {
-            MyMessage::ClickedButton => self.clicked += 1,
-        });
+            MyMessage::OnTextInput(new) => self.curr_value = new,
+        })
     }
 }
 
 fn main() {
     let mut renderer = PancursesRenderer::default();
-    let (view_y, view_x) = renderer.size();
-    let mut state = MyState::new((view_x, view_y));
+    let mut state = MyState::new();
     loop {
         let cache = state.cache.clone();
         let root = state.view();

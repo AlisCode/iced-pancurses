@@ -1,8 +1,8 @@
-use iced::{Cache, Checkbox, Column, Element, Text};
+use iced_native::{Cache, Checkbox, Column, Element, Text};
 use iced_pancurses::PancursesRenderer;
 
 pub struct MyState {
-    viewport_size: (u16, u16),
+    viewport_size: (u32, u32),
     cache: Cache,
     checked_test_checkbox: bool,
     checked_test_other_checkbox: bool,
@@ -21,8 +21,6 @@ impl MyState {
             _ => "Zero checked",
         };
         Column::new()
-            .width(self.viewport_size.0)
-            .height(self.viewport_size.1)
             .spacing(1)
             .push(Text::new(text))
             .push(Checkbox::new(
@@ -38,7 +36,7 @@ impl MyState {
             .into()
     }
 
-    pub fn new(viewport_size: (u16, u16)) -> Self {
+    pub fn new(viewport_size: (u32, u32)) -> Self {
         MyState {
             viewport_size,
             cache: Default::default(),
@@ -61,14 +59,15 @@ impl MyState {
 fn main() {
     let mut renderer = PancursesRenderer::default();
     let (view_y, view_x) = renderer.size();
-    let mut state = MyState::new((view_x, view_y));
+    let mut state = MyState::new((view_x as u32, view_y as u32));
     loop {
         let cache = state.cache.clone();
         let root = state.view();
-        let mut ui = iced::UserInterface::build(root, cache, &renderer);
-        ui.draw(&mut renderer);
+        let mut ui = iced_native::UserInterface::build(root, cache, &mut renderer);
+        let prim = ui.draw(&mut renderer);
+        renderer.draw(prim);
         if let Some(events) = renderer.handle() {
-            let messages = ui.update(events.into_iter());
+            let messages = ui.update(&mut renderer, events.into_iter());
             drop(ui);
             state.handle_messages(messages);
         }

@@ -1,8 +1,7 @@
-use iced::{Cache, Column, Element, Text, Radio};
+use iced_native::{Cache, Color, Column, Element, Radio, Text};
 use iced_pancurses::PancursesRenderer;
 
 pub struct MyState {
-    viewport_size: (u16, u16),
     pub selected_color: ExampleColor,
     pub cache: Cache,
 }
@@ -11,71 +10,73 @@ pub struct MyState {
 pub enum ExampleColor {
     White,
     Yellow,
-    Blue, 
-    Red
+    Blue,
+    Red,
 }
 
 impl ExampleColor {
-    pub fn str_rep(&self) -> &'static str {
+    pub fn as_iced_color(&self) -> Color {
         match self {
-            ExampleColor::White => "white",
-            ExampleColor::Yellow => "yellow",
-            ExampleColor::Blue => "blue",
-            ExampleColor::Red => "red",
+            ExampleColor::White => Color::WHITE,
+            ExampleColor::Yellow => Color {
+                r: 1.,
+                g: 1.,
+                b: 0.,
+                a: 1.,
+            },
+            ExampleColor::Blue => Color {
+                r: 0.,
+                g: 0.,
+                b: 1.,
+                a: 1.,
+            },
+            ExampleColor::Red => Color {
+                r: 1.,
+                g: 0.,
+                b: 0.,
+                a: 1.,
+            },
         }
     }
 }
 
 impl MyState {
-
     pub fn view(&mut self) -> Element<MyMessage, PancursesRenderer> {
-        let col = self.selected_color.str_rep();
         Column::new()
-            .max_width(self.viewport_size.0)
-            .max_height(self.viewport_size.1)
             .spacing(1)
-            .push(Text::new("Colored text").color(col))
+            .push(Text::new("Colored text").color(self.selected_color.as_iced_color()))
             .push(
                 Column::new()
-                .push(
-                    Radio::new(
+                    .push(Radio::new(
                         ExampleColor::White,
                         "White",
                         Some(self.selected_color),
                         |_| MyMessage::SelectColor(ExampleColor::White),
-                    )
-                )
-                .push(
-                    Radio::new(
+                    ))
+                    .push(Radio::new(
                         ExampleColor::Yellow,
                         "Yellow",
                         Some(self.selected_color),
                         |_| MyMessage::SelectColor(ExampleColor::Yellow),
-                    )
-                )
-                .push(
-                    Radio::new(
+                    ))
+                    .push(Radio::new(
                         ExampleColor::Blue,
                         "Blue",
                         Some(self.selected_color),
                         |_| MyMessage::SelectColor(ExampleColor::Blue),
-                    )
-                )
-                .push(
-                    Radio::new(
+                    ))
+                    .push(Radio::new(
                         ExampleColor::Red,
                         "Red",
                         Some(self.selected_color),
                         |_| MyMessage::SelectColor(ExampleColor::Red),
-                    )
-                )
+                    )),
             )
             .into()
     }
 
-    pub fn new(viewport_size: (u16, u16)) -> Self {
+    pub fn new() -> Self {
         MyState {
-            viewport_size,
             cache: Cache::default(),
             selected_color: ExampleColor::White,
         }
@@ -95,15 +96,15 @@ pub enum MyMessage {
 
 fn main() {
     let mut renderer = PancursesRenderer::default();
-    let (view_y, view_x) = renderer.size();
-    let mut state = MyState::new((view_x, view_y));
+    let mut state = MyState::new();
     loop {
         let cache = state.cache.clone();
         let root = state.view();
-        let mut ui = iced::UserInterface::build(root, cache, &renderer);
-        ui.draw(&mut renderer);
+        let mut ui = iced_native::UserInterface::build(root, cache, &mut renderer);
+        let prim = ui.draw(&mut renderer);
+        renderer.draw(prim);
         if let Some(events) = renderer.handle() {
-            let messages = ui.update(events.into_iter());
+            let messages = ui.update(&mut renderer, events.into_iter());
             drop(ui);
             state.handle_messages(messages);
         }
