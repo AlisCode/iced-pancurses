@@ -146,7 +146,8 @@ impl PancursesRenderer {
             Primitive::Text(texts, bounds, color) => {
                 let col = crate::colors::get_closest_color(color);
                 let col_idx = self.color_registry.get_idx(PancursesColor::new(col, -1));
-                self.window.attrset(pancurses::COLOR_PAIR((col_idx as u32).into()));
+                self.window
+                    .attrset(pancurses::COLOR_PAIR((col_idx as u32).into()));
                 let mut y = 0;
                 texts.into_iter().for_each(|l| {
                     self.window.mv(bounds.y as i32 + y as i32, bounds.x as i32);
@@ -158,7 +159,8 @@ impl PancursesRenderer {
                 let col_idx = self
                     .color_registry
                     .get_idx(PancursesColor::new(pancurses::COLOR_WHITE, -1));
-                self.window.attrset(pancurses::COLOR_PAIR((col_idx as u32).into()));
+                self.window
+                    .attrset(pancurses::COLOR_PAIR((col_idx as u32).into()));
                 let x = bounds.x as i32;
                 let y = bounds.y as i32;
                 let w = bounds.width as i32;
@@ -172,7 +174,8 @@ impl PancursesRenderer {
                 let col_idx = self
                     .color_registry
                     .get_idx(PancursesColor::new(pancurses::COLOR_WHITE, -1));
-                self.window.attrset(pancurses::COLOR_PAIR((col_idx as u32).into()));
+                self.window
+                    .attrset(pancurses::COLOR_PAIR((col_idx as u32).into()));
                 self.window.mv(y, x);
                 self.window.addch(boxchar);
             }
@@ -181,7 +184,7 @@ impl PancursesRenderer {
     }
 
     /// Gets the current size of the terminal root window
-    pub fn size(&self) -> (u16,u16) {
+    pub fn size(&self) -> (u16, u16) {
         let yx = self.window.get_max_yx();
         (yx.1 as u16, yx.0 as u16)
     }
