@@ -12,5 +12,14 @@ keywords= ["gui", "iced", "pancurses", "ncurses", "tui"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-iced_native = "0.1.0-beta" 
+futures = { version = "0.3", features = ["thread-pool"] }
+iced_core = { git = "https://github.com/hecrj/iced", rev = "8311500ac03a95927022d8eec8178ba7d87b0010", features = ["command", "subscription"] }
+iced_native = { git = "https://github.com/hecrj/iced", rev = "8311500ac03a95927022d8eec8178ba7d87b0010" }
 pancurses = "0.16.1"
+
+[dev-dependencies]
+futures = "0.3"
+async-std = { version = "1.3", features = ["unstable"] }
+surf = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+rand = "0.7"

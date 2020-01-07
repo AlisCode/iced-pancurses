@@ -6,11 +6,11 @@ use iced_native::{Font, HorizontalAlignment, Layout, VerticalAlignment};
 // TODO: Properly support image rendering using w3img backend or fallback pixel buffer
 
 impl image::Renderer for PancursesRenderer {
-    fn dimensions(&self, _path: &str) -> (u32, u32) {
+    fn dimensions(&self, _path: &image::Handle) -> (u32, u32) {
         (15, 5)
     }
 
-    fn draw(&mut self, _path: &str, layout: Layout) -> Primitive {
+    fn draw(&mut self, _path: image::Handle, layout: Layout) -> Primitive {
         let mut bounds = layout.bounds();
         bounds.x += 1.;
         bounds.y += 1.;

@@ -4,12 +4,12 @@ mod column;
 //mod debugger;
 mod image;
 mod radio;
+mod row;
 mod scrollable;
 mod slider;
-//mod space;
-mod row;
+mod space;
 mod text;
-mod text_input;
+//mod text_input;
 
 use crate::colors::{ColorRegistry, PancursesColor};
 use crate::primitive::Primitive;
@@ -80,20 +80,44 @@ impl PancursesRenderer {
                 Event::Keyboard(keyboard::Event::Input {
                     state: ButtonState::Pressed,
                     key_code: KeyCode::Backspace,
+                    modifiers: keyboard::ModifiersState {
+                        shift: false,
+                        control: false,
+                        alt: false,
+                        logo: false,
+                    },
                 }),
                 Event::Keyboard(keyboard::Event::Input {
                     state: ButtonState::Released,
                     key_code: KeyCode::Backspace,
+                    modifiers: keyboard::ModifiersState {
+                        shift: false,
+                        control: false,
+                        alt: false,
+                        logo: false,
+                    },
                 }),
             ]),
             Some(Input::KeyEnter) => Some(vec![
                 Event::Keyboard(keyboard::Event::Input {
                     state: ButtonState::Pressed,
                     key_code: KeyCode::Enter,
+                    modifiers: keyboard::ModifiersState {
+                        shift: false,
+                        control: false,
+                        alt: false,
+                        logo: false,
+                    },
                 }),
                 Event::Keyboard(keyboard::Event::Input {
                     state: ButtonState::Released,
                     key_code: KeyCode::Enter,
+                    modifiers: keyboard::ModifiersState {
+                        shift: false,
+                        control: false,
+                        alt: false,
+                        logo: false,
+                    },
                 }),
             ]),
             Some(Input::KeyMouse) => {
@@ -137,6 +161,12 @@ impl PancursesRenderer {
             }
             _ => None,
         }
+    }
+
+    // Sets nodelay to true in order to provide async actions
+    pub fn nodelay(self) -> Self {
+        self.window.nodelay(true);
+        self
     }
 
     /// Draws a given primitive onto the window

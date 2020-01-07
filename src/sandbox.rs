@@ -2,7 +2,7 @@ use crate::PancursesRenderer;
 use iced_native::{Cache, Container, Element, Length, UserInterface};
 
 pub trait Sandbox: Sized {
-    type Message: std::fmt::Debug + Send + Clone + 'static;
+    type Message: std::fmt::Debug + Send + Clone;
 
     /// Initializes the Sanbox
     ///
@@ -24,7 +24,10 @@ pub trait Sandbox: Sized {
     ///
     /// This should be the last thing you execute at the end of the entrypoint of
     /// your program.
-    fn run() {
+    fn run()
+    where
+        Self: 'static,
+    {
         // Creates the sandbox and its renderer
         let mut renderer = PancursesRenderer::default();
         let mut state = Self::new();
@@ -48,7 +51,7 @@ pub trait Sandbox: Sized {
             // Polls pancurses events and apply them on the ui
             let messages = renderer
                 .handle()
-                .map(|events| ui.update(&renderer, events.into_iter()));
+                .map(|events| ui.update(&renderer, None, events.into_iter()));
 
             // Stores back the cache
             cache = Some(ui.into_cache());
