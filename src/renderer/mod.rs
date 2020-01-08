@@ -64,7 +64,7 @@ impl Renderer for PancursesRenderer {
 
 impl PancursesRenderer {
     /// Clears the output of the renderer
-    pub fn flush(&mut self) {
+    pub fn flush(&self) {
         self.window.clear();
         self.window.refresh();
     }
@@ -76,6 +76,7 @@ impl PancursesRenderer {
             Some(Input::Character(c)) => {
                 Some(vec![Event::Keyboard(keyboard::Event::CharacterReceived(c))])
             }
+            Some(Input::KeyResize) => { self.flush(); None },
             Some(Input::KeyBackspace) => Some(vec![
                 Event::Keyboard(keyboard::Event::Input {
                     state: ButtonState::Pressed,

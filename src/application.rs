@@ -1,11 +1,11 @@
-use crate::PancursesRenderer;
 use crate::subscription::SubscriptionPool;
+use crate::PancursesRenderer;
 use iced_core::Command;
-use iced_native::{Cache, Container, Length, UserInterface, Element, Subscription};
+use iced_native::{Cache, Container, Element, Length, Subscription, UserInterface};
 
+use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
 use std::thread;
-use std::collections::VecDeque;
 use std::time::Duration;
 
 pub trait Application: Sized {
@@ -60,7 +60,8 @@ pub trait Application: Sized {
         let mut cache = Some(Cache::default());
 
         // Creates the threadpool for subscriptions
-        let mut thread_pool = futures::executor::ThreadPool::new().expect("Could not create thread pool for asynchronous operations");
+        let mut thread_pool = futures::executor::ThreadPool::new()
+            .expect("Could not create thread pool for asynchronous operations");
 
         let mut subscription_pool = SubscriptionPool::default();
 
@@ -74,23 +75,26 @@ pub trait Application: Sized {
             subscription_pool.update(state.subscription(), &mut thread_pool, event_queue.clone());
             // Consumes the cache and renders the UI to primitives
             let view: Element<'_, Self::Message, PancursesRenderer> = Container::new(state.view())
-            .width(Length::Units(size.0))
-            .height(Length::Units(size.1))
-            .into();
+                .width(Length::Units(size.0))
+                .height(Length::Units(size.1))
+                .into();
             let mut ui = UserInterface::build(view, cache.take().unwrap(), &mut renderer);
-            
+
             // Displays the new state of the sandbox using the renderer
             let primitives = ui.draw(&mut renderer);
             renderer.draw(primitives);
-            
+
             // Polls pancurses events and apply them on the ui, generating Application::Messages
-            let mut messages = renderer.handle().map(|events| { 
-                events
-                .iter()
-                .for_each(|e| subscription_pool.broadcast(*e)); 
-                ui.update(&renderer, None, events.into_iter()) 
-            }).unwrap_or(vec![]);
-            if messages.len() != 0 { renderer.flush(); }
+            let mut messages = renderer
+                .handle()
+                .map(|events| {
+                    events.iter().for_each(|e| subscription_pool.broadcast(*e));
+                    ui.update(&renderer, None, events.into_iter())
+                })
+                .unwrap_or(vec![]);
+            if messages.len() != 0 {
+                renderer.flush();
+            }
 
             // Polls Application::Messages from the Receiver
             let mut evt_queue = event_queue.lock().expect("Poisoned lock");
@@ -101,10 +105,10 @@ pub trait Application: Sized {
 
             // Stores back the cache
             cache = Some(ui.into_cache());
-            
+
             if messages.len() != 0 {
                 // Applies updates on the state with given messages if any.
-                // Launching update can generate Commands, so we spawn their futures so as to resolve them. 
+                // Launching update can generate Commands, so we spawn their futures so as to resolve them.
                 let commands = state.update(messages);
                 commands.into_iter().for_each(|command| {
                     spawn_command(command, &mut thread_pool, event_queue.clone())
@@ -127,7 +131,7 @@ fn spawn_command<Message: Send + 'static>(
     for future in futures {
         let event_queue = event_queue.clone();
         let future = future.map(move |message| {
-            let mut evt_queue = event_queue.lock().unwrap(); 
+            let mut evt_queue = event_queue.lock().unwrap();
             let mut taken = evt_queue.take().unwrap();
             taken.push_back(message);
             *evt_queue = Some(taken);
