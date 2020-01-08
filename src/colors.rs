@@ -118,6 +118,6 @@ pub(crate) fn get_closest_color(source: Color) -> i16 {
         )
     })
     .min_by(|(a, _), (b, _)| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal))
-    .unwrap_or((Color::WHITE, pancurses::COLOR_WHITE))
+    .unwrap_or((0., pancurses::COLOR_WHITE))
     .1
 }
