@@ -76,10 +76,9 @@ impl Application for Pokedex {
             Pokedex::Loading => Column::new().width(Length::Shrink).push(
                 Text::new("Searching for Pokémon...")
                     .width(Length::Shrink)
-                    .size(40),
             ),
             Pokedex::Loaded { pokemon, search } => Column::new()
-                .max_width(100)
+                .max_width(70)
                 .spacing(1)
                 .align_items(Align::End)
                 .push(pokemon.view())
@@ -124,16 +123,16 @@ impl Pokemon {
             .push(Image::new(self.image.clone()))
             .push(
                 Column::new()
-                    .spacing(20)
+                    .spacing(1)
                     .push(
                         Row::new()
                             .align_items(Align::Center)
                             .spacing(1)
-                            .push(Text::new(&self.name).size(30))
+                            .push(Text::new(&self.name))
                             .push(
                                 Text::new(format!("#{}", self.number))
                                     .width(Length::Shrink)
-                                    .color([0.5, 0.5, 0.5]),
+                                    .color([1., 0., 0.]),
                             ),
                     )
                     .push(Text::new(&self.description)),
