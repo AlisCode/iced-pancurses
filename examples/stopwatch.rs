@@ -3,7 +3,7 @@ use iced_native::{
     Align, Background, Button, Color, Column, Command, Container, Element, HorizontalAlignment,
     Length, Row, Subscription, Text,
 };
-use iced_pancurses::{Application, PancursesRenderer};
+use iced_pancurses::{Application, TerminalRenderer};
 use std::time::{Duration, Instant};
 
 pub fn main() {
@@ -79,7 +79,7 @@ impl Application for Stopwatch {
         }
     }
 
-    fn view(&mut self) -> Element<Message, PancursesRenderer> {
+    fn view(&mut self) -> Element<Message, TerminalRenderer> {
         const MINUTE: u64 = 60;
         const HOUR: u64 = 60 * MINUTE;
 

@@ -1,9 +1,9 @@
 use crate::primitive::Primitive;
-use crate::PancursesRenderer;
+use crate::TerminalRenderer;
 use iced_native::widget::text_input;
 use iced_native::{Font, HorizontalAlignment, Point, Rectangle, VerticalAlignment};
 
-impl text_input::Renderer for PancursesRenderer {
+impl text_input::Renderer for TerminalRenderer {
     fn default_size(&self) -> u16 {
         3
     }

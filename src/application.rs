@@ -1,5 +1,5 @@
 use crate::subscription::SubscriptionPool;
-use crate::PancursesRenderer;
+use crate::TerminalRenderer;
 use iced_core::Command;
 use iced_native::{Cache, Container, Element, Length, Subscription, UserInterface};
 
@@ -31,7 +31,7 @@ pub trait Application: Sized {
     ///
     /// These widgets can produce messages based on user interaction, that will get handled
     /// by the update method.
-    fn view(&mut self) -> Element<'_, Self::Message, PancursesRenderer>;
+    fn view(&mut self) -> Element<'_, Self::Message, TerminalRenderer>;
 
     /// Returns the event Subscription for the current state of the
     /// application.
@@ -55,7 +55,7 @@ pub trait Application: Sized {
         Self: 'static,
     {
         // Creates the renderer and the default state
-        let mut renderer = PancursesRenderer::default().nodelay();
+        let mut renderer = TerminalRenderer::default().nodelay();
         let (mut state, command) = Self::new();
         let mut cache = Some(Cache::default());
 
@@ -74,7 +74,7 @@ pub trait Application: Sized {
             let size = renderer.size();
             subscription_pool.update(state.subscription(), &mut thread_pool, event_queue.clone());
             // Consumes the cache and renders the UI to primitives
-            let view: Element<'_, Self::Message, PancursesRenderer> = Container::new(state.view())
+            let view: Element<'_, Self::Message, TerminalRenderer> = Container::new(state.view())
                 .width(Length::Units(size.0))
                 .height(Length::Units(size.1))
                 .into();

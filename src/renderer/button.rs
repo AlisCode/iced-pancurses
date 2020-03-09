@@ -1,9 +1,9 @@
 use crate::primitive::Primitive;
-use crate::PancursesRenderer;
+use crate::TerminalRenderer;
 use iced_native::widget::button;
 use iced_native::{Background, Point, Rectangle};
 
-impl button::Renderer for PancursesRenderer {
+impl button::Renderer for TerminalRenderer {
     fn draw(
         &mut self,
         bounds: Rectangle,

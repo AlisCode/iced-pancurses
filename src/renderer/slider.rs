@@ -1,12 +1,12 @@
 use crate::primitive::Primitive;
-use crate::PancursesRenderer;
+use crate::TerminalRenderer;
 
 use iced_native::widget::slider;
 use iced_native::{Point, Rectangle};
 
 use std::ops::RangeInclusive;
 
-impl slider::Renderer for PancursesRenderer {
+impl slider::Renderer for TerminalRenderer {
     fn height(&self) -> u32 {
         1
     }

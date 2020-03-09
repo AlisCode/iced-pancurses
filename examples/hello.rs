@@ -1,5 +1,5 @@
 use iced_native::{Color, Column, Container, Element, HorizontalAlignment, Length, Text};
-use iced_pancurses::{PancursesRenderer, Sandbox};
+use iced_pancurses::{Sandbox, TerminalRenderer};
 
 pub struct MyState;
 
@@ -10,12 +10,12 @@ impl Sandbox for MyState {
         MyState
     }
 
-    fn view(&mut self) -> Element<'_, Self::Message, PancursesRenderer> {
+    fn view(&mut self) -> Element<'_, Self::Message, TerminalRenderer<std::io::Stdout>> {
         Container::new(
             Column::new()
                 .spacing(1)
                 .push(
-                    Text::new("Hello pancurses!\nThis is a toy renderer")
+                    Text::new("Hello terminal!\nThis is a toy renderer")
                         .color(Color {
                             r: 0.,
                             g: 0.,
@@ -38,6 +38,6 @@ impl Sandbox for MyState {
     fn update(&mut self, _messages: Vec<Self::Message>) {}
 }
 
-fn main() {
+fn main() -> terminal::error::Result<()> {
     MyState::run()
 }

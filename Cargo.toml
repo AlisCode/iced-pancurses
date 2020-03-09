@@ -15,7 +15,7 @@ keywords= ["gui", "iced", "pancurses", "ncurses", "tui"]
 futures = { version = "0.3", features = ["thread-pool"] }
 iced_core = { git = "https://github.com/hecrj/iced", rev = "8311500ac03a95927022d8eec8178ba7d87b0010", features = ["command", "subscription"] }
 iced_native = { git = "https://github.com/hecrj/iced", rev = "8311500ac03a95927022d8eec8178ba7d87b0010" }
-pancurses = "0.16.1"
+terminal = "0.2.1"
 
 [dev-dependencies]
 futures = "0.3"

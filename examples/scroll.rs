@@ -1,11 +1,11 @@
 use iced_native::widget::scrollable::State;
 use iced_native::{Cache, Column, Length, Row, Scrollable, Text};
-use iced_pancurses::PancursesRenderer;
+use iced_pancurses::TerminalRenderer;
 
 fn main() {
     let mut state = State::new();
-    let mut renderer = PancursesRenderer::default();
-    let root: Column<(), PancursesRenderer> = Column::new()
+    let mut renderer = TerminalRenderer::default();
+    let root: Column<(), TerminalRenderer> = Column::new()
         .spacing(1)
         .push(Text::new("Hello scrolling !"))
         .push(

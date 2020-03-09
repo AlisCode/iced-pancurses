@@ -1,6 +1,6 @@
 use iced_native::widget::slider::State as SliderState;
 use iced_native::{Column, Container, Element, Length, Slider, Text};
-use iced_pancurses::{PancursesRenderer, Sandbox};
+use iced_pancurses::{TerminalRenderer, Sandbox};
 
 pub struct MyState {
     slider_state: SliderState,
@@ -22,7 +22,7 @@ impl Sandbox for MyState {
         }
     }
 
-    fn view(&mut self) -> Element<MyMessage, PancursesRenderer> {
+    fn view(&mut self) -> Element<MyMessage, TerminalRenderer> {
         Container::new(
             Column::new()
                 .spacing(1)

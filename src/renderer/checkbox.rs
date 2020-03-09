@@ -1,10 +1,10 @@
 use crate::primitive::Primitive;
-use crate::PancursesRenderer;
+use crate::TerminalRenderer;
 
 use iced_native::widget::checkbox::Renderer as CheckboxRenderer;
 use iced_native::Rectangle;
 
-impl CheckboxRenderer for PancursesRenderer {
+impl CheckboxRenderer for TerminalRenderer {
     fn default_size(&self) -> u32 {
         1
     }

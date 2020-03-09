@@ -1,5 +1,5 @@
 use iced_native::{Column, Container, Element, Image, Length, Text};
-use iced_pancurses::{PancursesRenderer, Sandbox};
+use iced_pancurses::{TerminalRenderer, Sandbox};
 
 struct MyState;
 
@@ -12,7 +12,7 @@ impl Sandbox for MyState {
 
     fn update(&mut self, _messages: Vec<()>) {}
 
-    fn view(&mut self) -> Element<'_, (), PancursesRenderer> {
+    fn view(&mut self) -> Element<'_, (), TerminalRenderer> {
         Container::new(
             Column::new()
                 .spacing(1)

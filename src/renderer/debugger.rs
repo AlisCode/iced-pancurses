@@ -1,8 +1,8 @@
-use crate::PancursesRenderer;
+use crate::TerminalRenderer;
 use iced_native::renderer::Debugger;
 use iced_native::{Layout, Color, Point};
 
-impl Debugger for PancursesRenderer {
+impl Debugger for TerminalRenderer {
     fn explain<Message>(&mut self, widget: &dyn Widget<Message, Self>, layout: Layout, cursor_position: Point, color: Color) {
         let bounds = layout.bounds();
         if let Ok(sub_win) = self.window.subwin(

@@ -1,10 +1,10 @@
 use crate::primitive::Primitive;
-use crate::renderer::PancursesRenderer;
+use crate::renderer::TerminalRenderer;
 
 use iced_native::widget::text;
 use iced_native::{Color, Font, HorizontalAlignment, Rectangle, Size, VerticalAlignment};
 
-impl text::Renderer for PancursesRenderer {
+impl<W: std::io::Write> text::Renderer for TerminalRenderer<W> {
     fn default_size(&self) -> u16 {
         1
     }

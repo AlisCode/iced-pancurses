@@ -1,5 +1,5 @@
 use iced_native::{Checkbox, Column, Container, Element, Length, Text};
-use iced_pancurses::{PancursesRenderer, Sandbox};
+use iced_pancurses::{TerminalRenderer, Sandbox};
 
 pub struct MyState {
     checked_test_checkbox: bool,
@@ -15,7 +15,7 @@ pub enum MyMessage {
 impl Sandbox for MyState {
     type Message = MyMessage;
 
-    fn view(&mut self) -> Element<MyMessage, PancursesRenderer> {
+    fn view(&mut self) -> Element<MyMessage, TerminalRenderer> {
         let text = match (self.checked_test_checkbox, self.checked_test_other_checkbox) {
             (true, true) => "Both checked!",
             (false, true) | (true, false) => "Only one checked",

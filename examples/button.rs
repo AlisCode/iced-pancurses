@@ -1,6 +1,6 @@
 use iced_native::widget::button::State as ButtonState;
 use iced_native::{Button, Column, Container, Element, Length, Text};
-use iced_pancurses::{PancursesRenderer, Sandbox};
+use iced_pancurses::{TerminalRenderer, Sandbox};
 
 #[derive(Debug, Clone, Copy)]
 pub enum MyMessage {
@@ -15,7 +15,7 @@ pub struct MyState {
 impl Sandbox for MyState {
     type Message = MyMessage;
 
-    fn view(&mut self) -> Element<MyMessage, PancursesRenderer> {
+    fn view(&mut self) -> Element<MyMessage, TerminalRenderer> {
         Container::new(
             Column::new()
                 .spacing(1)

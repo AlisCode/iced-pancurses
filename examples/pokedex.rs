@@ -2,7 +2,7 @@ use iced_native::{
     Align, Button, Color, Column, Command,
     Container, Element, Image, Length, Row, Text, button, image,
 };
-use iced_pancurses::{Application, PancursesRenderer};
+use iced_pancurses::{Application, TerminalRenderer};
 
 pub fn main() {
     Pokedex::run()
@@ -71,7 +71,7 @@ impl Application for Pokedex {
         .collect()
     }
 
-    fn view(&mut self) -> Element<Message, PancursesRenderer> {
+    fn view(&mut self) -> Element<Message, TerminalRenderer> {
         let content = match self {
             Pokedex::Loading => Column::new().width(Length::Shrink).push(
                 Text::new("Searching for Pokémon...")
@@ -116,7 +116,7 @@ struct Pokemon {
 impl Pokemon {
     const TOTAL: u16 = 807;
 
-    fn view(&self) -> Element<Message, PancursesRenderer> {
+    fn view(&self) -> Element<Message, TerminalRenderer> {
         Row::new()
             .spacing(1)
             .align_items(Align::Center)
@@ -211,7 +211,7 @@ impl From<surf::Exception> for Error {
     }
 }
 
-fn button<'a>(state: &'a mut button::State, text: &str) -> Button<'a, Message, PancursesRenderer> {
+fn button<'a>(state: &'a mut button::State, text: &str) -> Button<'a, Message, TerminalRenderer> {
     Button::new(state, Text::new(text).color(Color::WHITE))
         .background(Color::from_rgb(0.11, 0.42, 0.87))
         .padding(1)

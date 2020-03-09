@@ -1,6 +1,6 @@
 use iced_native::widget::text_input::State;
 use iced_native::{Column, Container, Element, Length, Text, TextInput};
-use iced_pancurses::{PancursesRenderer, Sandbox};
+use iced_pancurses::{TerminalRenderer, Sandbox};
 
 #[derive(Debug, Clone)]
 pub enum MyMessage {
@@ -22,7 +22,7 @@ impl Sandbox for MyState {
         }
     }
 
-    fn view(&mut self) -> Element<'_, MyMessage, PancursesRenderer> {
+    fn view(&mut self) -> Element<'_, MyMessage, TerminalRenderer> {
         Container::new(
             Column::new()
                 .spacing(1)

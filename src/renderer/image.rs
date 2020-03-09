@@ -1,11 +1,11 @@
 use crate::primitive::Primitive;
-use crate::PancursesRenderer;
+use crate::TerminalRenderer;
 use iced_native::widget::image;
 use iced_native::{Font, HorizontalAlignment, Layout, VerticalAlignment};
 
 // TODO: Properly support image rendering using w3img backend or fallback pixel buffer
 
-impl image::Renderer for PancursesRenderer {
+impl image::Renderer for TerminalRenderer {
     fn dimensions(&self, _path: &image::Handle) -> (u32, u32) {
         (15, 5)
     }

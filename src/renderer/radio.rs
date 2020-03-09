@@ -1,9 +1,9 @@
 use crate::primitive::Primitive;
-use crate::PancursesRenderer;
+use crate::TerminalRenderer;
 use iced_native::widget::radio::Renderer as RadioRenderer;
 use iced_native::Rectangle;
 
-impl RadioRenderer for PancursesRenderer {
+impl RadioRenderer for TerminalRenderer {
     fn default_size(&self) -> u32 {
         1
     }

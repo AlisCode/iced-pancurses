@@ -1,7 +1,7 @@
-use crate::{primitive::Primitive, PancursesRenderer};
+use crate::{primitive::Primitive, TerminalRenderer};
 use iced_native::{column, Element, Layout, Point};
 
-impl column::Renderer for PancursesRenderer {
+impl<W: std::io::Write> column::Renderer for TerminalRenderer<W> {
     fn draw<Message>(
         &mut self,
         content: &[Element<'_, Message, Self>],

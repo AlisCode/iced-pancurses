@@ -1,7 +1,7 @@
-use crate::{primitive::Primitive, PancursesRenderer};
+use crate::{primitive::Primitive, TerminalRenderer};
 use iced_native::{row, Element, Layout, Point};
 
-impl row::Renderer for PancursesRenderer {
+impl row::Renderer for TerminalRenderer {
     fn draw<Message>(
         &mut self,
         children: &[Element<'_, Message, Self>],

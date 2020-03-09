@@ -1,10 +1,10 @@
 use crate::primitive::Primitive;
-use crate::PancursesRenderer;
+use crate::TerminalRenderer;
 
 use iced_native::widget::scrollable;
 use iced_native::Rectangle;
 
-impl scrollable::Renderer for PancursesRenderer {
+impl scrollable::Renderer for TerminalRenderer {
     fn scrollbar(
         &self,
         _bounds: Rectangle,

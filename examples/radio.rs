@@ -1,5 +1,5 @@
 use iced_native::{Color, Column, Container, Element, Length, Radio, Text};
-use iced_pancurses::{PancursesRenderer, Sandbox};
+use iced_pancurses::{TerminalRenderer, Sandbox};
 
 struct MyState {
     selected_color: ExampleColor,
@@ -42,7 +42,7 @@ impl ExampleColor {
 impl Sandbox for MyState {
     type Message = MyMessage;
 
-    fn view(&mut self) -> Element<'_, MyMessage, PancursesRenderer> {
+    fn view(&mut self) -> Element<'_, MyMessage, TerminalRenderer> {
         Container::new(
             Column::new()
                 .spacing(1)
